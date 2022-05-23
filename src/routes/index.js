@@ -3,11 +3,7 @@ import React from 'react';
 import { Text, View } from 'react-native';
 import { Scene, Stack } from 'react-native-router-flux';
 import commonColor from '../../native-base-theme/variables/commonColor';
-import Joystick from '../components/Joystick';
-import AboutUs from '../containers/aboutUS/AboutUs';
-import ContactUs from '../containers/contacts/ContactUs';
 import HomeScreen from '../containers/home/HomeScreen';
-import StackNavigation from './Stackavigation';
 
 const SettingsTopTab = (focused, label) => (
   <View style={{ marginTop: -15 }}>
@@ -47,12 +43,7 @@ const SettingsTab = (focused, name, initial, label) => (
 
 const Index = (
   <Stack hideNavBar>
-    
     <Scene key="homeScreen" title="HomeScreen" component={HomeScreen} />
-    <Scene key="aboutUs" title="AboutUs" component={AboutUs} />
-    {/* <Scene key="buttons" title="Buttons" component={Buttons} /> */}
-    <Scene key="joystick" title="Joystick" component={Joystick} />
-    <Scene key="contactUs" title="ContactUs" component={ContactUs} />
   </Stack>
 );
 

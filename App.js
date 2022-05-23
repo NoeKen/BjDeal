@@ -1,9 +1,21 @@
 import React from 'react';
+import SplashScreen from 'react-native-splash-screen';
 import Root from './src/index';
-import configureStore from './src/store/index';
+import HomeScreen from './src/containers/home/HomeScreen';
 
-const { persistor, store } = configureStore();
-
-export default function App() {
-  return <Root store={store} persistor={persistor} />;
+class App extends React.Component {
+  constructor() {
+    super();
+  }
+  async componentDidMount() {
+    SplashScreen.hide();
+  }
+  // useEffect((
+  //   ),[])
+  render() {
+    // return <HomeScreen />;
+    return <Root />;
+  }
 }
+
+export default App;

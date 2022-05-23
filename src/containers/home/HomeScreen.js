@@ -1,60 +1,62 @@
-import { Container, Icon, Text, Title, View } from 'native-base';
-import React, { useEffect, useRef, useState } from 'react';
+import {Container, Icon, Text, Title, View} from 'native-base';
+import React, {useEffect, useRef, useState} from 'react';
 import {
-  ActivityIndicator, BackHandler,
+  ActivityIndicator,
+  BackHandler,
+  Image,
   Modal,
-  ToastAndroid,
   TouchableOpacity,
+  ScrollView,
+  RefreshControl,
+  Dimensions,
 } from 'react-native';
-import { Actions } from 'react-native-router-flux';
+import {Actions} from 'react-native-router-flux';
 import WebView from 'react-native-webview';
-import { connect } from 'react-redux';
 import commonColor from '../../../native-base-theme/variables/commonColor';
-import Joystick from '../../components/Joystick';
-import Localization from '../../constants/i18/Localization';
 import styles from './styles';
 
 // eslint-disable-next-line react/prop-types
-const HomeScreen = ({ navigation, viewMenu, replaceViewMenu }) => {
+function wait(timeout) {
+  return new Promise(resolve => {
+    setTimeout(resolve, timeout);
+  });
+}
+const HomeScreen = () => {
   const webViewRef = useRef();
   const [canGoBack, setCanGoBack] = useState(false);
   const [canGoForward, setCanGoForward] = useState(false);
   const [visible, setVisible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [exitApp, setExitApp] = useState(0);
-  const [closeJoystick, setCloseJoystick] = useState(false);
+  const [annonce, setAnnonce] = useState(
+    'https://www.bj-deal.com/pst_stp_one.php',
+  );
+  const [home, setHome] = useState('https://www.bj-deal.com/');
+  const [contactsUrl, setContactsUrl] = useState(
+    'https://www.bj-deal.com/meet-us.php',
+  );
+  const [stage, setStage] = useState(2);
+  const [refreshing, setRefreshing] = React.useState(false);
 
   const [loaded, setLoaded] = useState(false);
   const [baseUrl, setBaseUrl] = useState('https://www.bj-deal.com/');
 
-  
   useEffect(() => {
     setVisible(true);
+  }, []);
+
+  useEffect(() => {
     const backAction = () => {
-      Actions.currentScene === 'homeScreen'
-        ? canGoBack === false
-          ? setModalVisible(true)
-          : handleBackPress()
-        : Actions.homeScreen();
+      setModalVisible(true);
       return true;
     };
 
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
 
     return () => backHandler.remove();
   }, []);
-
-  function stateChange() {
-    console.log('WebViewRef: ', webViewRef);
-    if (webViewRef.current?.state?.lastErrorEvent?.code == -2) {
-      console.log('WebViewRef == -2 ', webViewRef.current.state?.lastErrorEvent?.code);
-      setLoaded(false);
-    } else {
-      console.log('WebViewRef != -2 ', webViewRef.current.state?.lastErrorEvent?.code);
-      setLoaded(true);
-    }
-    console.group(loaded);
-  }
 
   async function handleBackPress() {
     await webViewRef.current.goBack();
@@ -64,23 +66,8 @@ const HomeScreen = ({ navigation, viewMenu, replaceViewMenu }) => {
     await webViewRef.current.goForward();
   }
 
-  async function theme() {
-    await webViewRef.current.reload();
-    console.log('Theme: ', webViewRef.current.getCommands());
-  }
-
   function refresh() {
     webViewRef.current?.reload();
-  }
-  async function getJsonData() {
-    try {
-      const res = await fetch('https://facebook.github.io/react-native/movies.json');
-      const json = await res.json();
-      console.group(json);
-      return json.data;
-    } catch (error) {
-      console.error(error);
-    }
   }
 
   const ActivityIndicatorElement = () => (
@@ -89,15 +76,30 @@ const HomeScreen = ({ navigation, viewMenu, replaceViewMenu }) => {
     </View>
   );
 
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    setVisible(true);
+    webViewRef.current.reload();
+    wait(2000).then(() => {
+      setVisible(false), setRefreshing(true);
+    });
+  }, [visible, refreshing]);
+
+  const [height, setHeight] = useState(Dimensions.get('screen').height);
+  const [isEnabled, setEnabled] = useState(typeof onRefresh === 'function');
+
   return (
-    <Container style={styles.container}>
+    <Container
+      style={[
+        styles.container,
+        {paddingBottom: baseUrl == contactsUrl ? 50 : 20},
+      ]}
+    >
       <Modal
         animationType="fade"
         transparent
         visible={modalVisible}
         onRequestClose={async () => {
-          // await Alert.alert('Modal has been closed.');
-          ToastAndroid.show('Modal has been closed.', ToastAndroid.LONG);
           setModalVisible(false);
         }}
       >
@@ -118,10 +120,10 @@ const HomeScreen = ({ navigation, viewMenu, replaceViewMenu }) => {
                 fontSize: 22,
               }}
             >
-              Bj-deal !!
+              Bj-deal
             </Title>
-            <Text style={{ textAlign: 'center', fontSize: 18 }}>
-              {Localization.exit}
+            <Text style={{textAlign: 'center', fontSize: 18}}>
+              Quitter l'application?
             </Text>
 
             <View
@@ -132,131 +134,173 @@ const HomeScreen = ({ navigation, viewMenu, replaceViewMenu }) => {
               }}
             >
               <TouchableOpacity
-                style={{ marginRight: 15 }}
+                style={{marginRight: 15}}
                 onPress={() => {
-                  console.log('current page: ', Actions.currentScene);
                   setModalVisible(false);
                 }}
               >
-                <Text style={styles.modal.cancel}>Cancel</Text>
+                <Text style={styles.modal.cancel}>ANNULER</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
                   BackHandler.exitApp();
                 }}
               >
-                <Text style={{ fontWeight: '700' }}>Exit</Text>
+                <Text style={{fontWeight: '700'}}>OK</Text>
               </TouchableOpacity>
             </View>
           </View>
         </View>
       </Modal>
       <View style={styles.webViewContainer}>
-        <WebView
-          userAgent="MobileApp-Baneck-Android-Webview"
-          ref={webViewRef}
-          source={{ uri: baseUrl }}
-          onNavigationStateChange={(state) => {
-            const back = state.canGoBack;
-            const forward = state.canGoForward;
-            setCanGoBack(back);
-            setCanGoForward(forward);
-            stateChange();
-            setCloseJoystick(true);
-          }}
-          onTouchStart={()=>replaceViewMenu(false)}
-          onLoad={() => setVisible(false)}
-        />
+        <ScrollView
+          onLayout={e => setHeight(e.nativeEvent.layout.height)}
+          refreshControl={
+            <RefreshControl
+              onRefresh={onRefresh}
+              refreshing={false}
+              enabled={isEnabled}
+              colors={[commonColor.brandPrimary]}
+            />
+          }
+          style={{flex: 1, height: '100%'}}
+        >
+          <WebView
+            onScroll={e =>
+              setEnabled(
+                typeof onRefresh === 'function' &&
+                  e.nativeEvent.contentOffset.y === 0,
+              )
+            }
+            style={[{height}]}
+            userAgent="MobileApp-Baneck-Android-Webview"
+            ref={webViewRef}
+            source={{uri: baseUrl}}
+            onNavigationStateChange={state => {
+              if (stage == 2 && state.url == annonce) {
+                setStage(3);
+              } else if (stage == 2 && state.url == contactsUrl) {
+                setStage(1);
+              } else if (stage == 1 && state.url !== contactsUrl) {
+                setBaseUrl(state.url);
+                setStage(2);
+              } else if (stage == 3 && state.url !== annonce) {
+                setBaseUrl(state.url);
+                setStage(2);
+              }
+              const back = state.canGoBack;
+              const forward = state.canGoForward;
+              setCanGoBack(back);
+              setCanGoForward(forward);
+            }}
+            // onLoad={() => setVisible(false)}
+            onLoadStart={() => setVisible(false)}
+            // onLoadProgress={()=> setVisible(false)}
+          />
+        </ScrollView>
         {visible ? <ActivityIndicatorElement /> : null}
       </View>
 
       <View style={styles.navigationContainer}>
         <View
           style={{
-            justifyContent: 'center',
+            justifyContent: 'space-between',
             alignItems: 'center',
             backgroundColor: commonColor.inverseTextColor,
             height: 50,
             flexDirection: 'row',
             elevation: 80,
+            shadowOffset: {
+              width: 10,
+              height: 3,
+            },
+            shadowOpacity: 0.27,
+            shadowRadius: 4.65,
             shadowColor: commonColor.textColor,
-            borderTopLeftRadius: 30,
-            borderTopRightRadius: 30,
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
             flex: 1,
+            borderTopWidth: 1,
+            borderLeftWidth: 1,
+            borderRightWidth: 1,
+            borderColor: commonColor.inputBorderColor,
+            paddingHorizontal: 16,
           }}
         >
           <Icon
             name="chevron-back"
             onPress={() => {
-              handleBackPress();
-              replaceViewMenu(false);
+              canGoBack ? handleBackPress() : null;
             }}
             style={{
-              color: canGoBack ? commonColor.textColor : commonColor.inactiveTab,
+              color: canGoBack
+                ? commonColor.textColor
+                : commonColor.inactiveTab,
             }}
           />
-          <View
-            style={{
-              backgroundColor: commonColor.inverseTextColor,
-              borderRadius: 100,
-              width: 120,
-              height: 120,
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexDirection: 'row',
-              elevation: 20,
-              shadowColor: commonColor.textColor,
-              marginRight: 50,
-              marginLeft: 50,
-              marginBottom: -40,
+          <TouchableOpacity
+            onPress={() => {
+              setStage(1);
+              setBaseUrl(contactsUrl);
             }}
           >
-            <TouchableOpacity
+            <Icon
+              name="people"
               style={{
-                // backgroundColor: commonColor.brandPrimary,
-                borderRadius: 50,
-                width: 45,
-                height: 45,
-                alignItems: 'center',
-                justifyContent: 'center',
-                // elevation: 2,
-                shadowColor: commonColor.textColor,
-                marginBottom: 40,
-                // marginRight:60,
-                // marginLeft: 60,
+                color:
+                  stage == 1
+                    ? commonColor.brandPrimary
+                    : commonColor.inactiveTab,
+                fontSize: 25,
               }}
-              onPress={() => {
-                Actions.homeScreen();
-                replaceViewMenu(false);
+            />
+          </TouchableOpacity>
+          <Icon
+            onPress={() => {
+              setCanGoBack(!canGoBack),
+              setCanGoForward(!canGoForward)
+              baseUrl == home ? Actions.homeScreen() : setBaseUrl(home),
+                setStage(2);
+            }}
+            name="home"
+            style={{
+              color:
+                stage == 2 ? commonColor.brandPrimary : commonColor.inactiveTab,
+              fontSize: 20,
+            }}
+          />
+          <TouchableOpacity
+            onPress={() => {
+              setBaseUrl(annonce), setStage(3);
+            }}
+          >
+            <Image
+              source={require('../../Assets/addPub.png')}
+              style={{
+                width: 28,
+                height: 28,
+                tintColor:
+                  stage == 3
+                    ? commonColor.brandPrimary
+                    : commonColor.inactiveTab,
               }}
-              // onPress={() => {Actions.HomeScreen({navigation:navigation, bonjour:'hello word'}), console.log(bonjour)} }
-            >
-              <Icon name="home" style={{ color: commonColor.brandPrimary, fontSize: 20 }} />
-            </TouchableOpacity>
-          </View>
+            />
+          </TouchableOpacity>
           <Icon
             name="chevron-forward"
             style={{
-              color: canGoForward ? commonColor.textColor : commonColor.inactiveTab,
+              color: canGoForward
+                ? commonColor.textColor
+                : commonColor.inactiveTab,
             }}
             onPress={() => {
-              handleForwardPress();
-              replaceViewMenu(false);
+              canGoForward ? handleForwardPress() : null;
             }}
           />
         </View>
       </View>
-      <Joystick navigation={navigation} reload={refresh} home closeJoystick={closeJoystick} viewMenu={viewMenu} replaceViewMenu={replaceViewMenu} />
     </Container>
   );
 };
 
-const mapStateToProps=(state)=>({
-  viewMenu : state.auth.viewMenu,
-})
-
-const mapDispatchToProps = (dispatch) =>({
-  replaceViewMenu : dispatch.auth.replaceViewMenu,
-})
-
-export default connect(mapStateToProps,mapDispatchToProps) (HomeScreen);
+export default HomeScreen;

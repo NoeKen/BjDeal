@@ -1,52 +1,19 @@
-import {StyleSheet} from 'react-native';
-import commonColor from '../../../native-base-theme/variables/commonColor';
+import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: 'transparent',
-    paddingBottom: 20,
+    backgroundColor: 'rgb(250,250,255)',
+    // paddingBottom: 30,
   },
   webViewContainer: {
     flex: 1,
   },
   navigationContainer: {
-    // width: '100%',
     flexDirection: 'row',
-    // alignSelf: 'center',
-    flex: 1,
     position: 'absolute',
     bottom: 0,
-  },
-  navigation: {
-    flex: 1,
-    flexDirection: 'row',
-    // justifyContent: 'flex-end',
-    backgroundColor: 'transparent',
-    // alignSelf: 'flex-end',
-  },
-  button: {
-    backgroundColor: commonColor.brandPrimary,
-    marginRight: 16,
-    // backgroundColor: 'rgba(0,0,0,0.2)',
-    // backgroundColor: 'rgba(241,229,226,0.3)',
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderRadius: 100,
-    width: 40,
-    height: 40,
-    alignContent: 'center',
-    justifyContent: 'center',
-    shadowColor: commonColor.brandPrimary,
-    // shadowOpacity:0.5,
-    // shadowOffset: 5,
-  },
-  buttonTitle: {
-    fontSize: 20,
-    textAlign: 'center',
-    color: commonColor.brandPrimary,
-    fontWeight: 'bold',
   },
   activityIndicator: {
     flex: 1,
@@ -65,7 +32,6 @@ const styles = StyleSheet.create({
   },
   modal: {
     justifyContent: 'space-between',
-    // alignItems: 'center',
     backgroundColor: 'white',
     height: 150,
     width: '80%',
@@ -75,51 +41,8 @@ const styles = StyleSheet.create({
     elevation: 30,
     padding: 16,
     cancel: {
-      marginRight: 35
+      marginRight: 35,
     },
-  },
-  menuButton: {
-    backgroundColor: commonColor.inverseTextColor,
-    // backgroundColor: 'rgba(255,229,226,0.8)',
-    borderTopLeftRadius: 30,
-    borderBottomLeftRadius: 30,
-    justifyContent: 'center',
-    padding: 10,
-    paddingRight: -10,
-    elevation: 20,
-    // position: 'absolute',
-    // alignSelf: 'flex-end',
-    // height: 40,
-    // marginTop:100
-  },
-  iconContainer: {
-    backgroundColor: 'white',
-    // backgroundColor: 'rgba(0,0,0,0.7)',
-    borderRadius: 20,
-    // borderColor: commonColor.brandPrimary,
-    // borderWidth: 1,
-    width: 40,
-    height: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
-    elevation: 3,
-    // shadowColor: 'black',
-    // shadowRadius: 50,
-    // shadowOffset: 0.7,
-  },
-  menu: {
-    // borderRadius:20,
-    // alignSelf:'flex-end',
-    // marginEnd:50,
-    // flex: 1,
-    // width:'100%',
-    // flexDirection: 'row',
-    // justifyContent: 'space-evenly',
-    // backgroundColor: 'transparent',
-    // position: 'absolute',
-    // marginHorizontal:16,
-    overflow: 'hidden',
-    alignContent: 'flex-end',
   },
 });
 
