@@ -234,7 +234,7 @@ const HomeScreen = () => {
             }}
             style={{
               color: canGoBack
-                ? commonColor.textColor
+                ? commonColor.brandPrimary
                 : commonColor.inactiveTab,
             }}
           />
@@ -290,7 +290,7 @@ const HomeScreen = () => {
             name="chevron-forward"
             style={{
               color: canGoForward
-                ? commonColor.textColor
+                ? commonColor.brandPrimary
                 : commonColor.inactiveTab,
             }}
             onPress={() => {
