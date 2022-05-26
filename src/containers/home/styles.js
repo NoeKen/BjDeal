@@ -1,4 +1,5 @@
-import { StyleSheet } from 'react-native';
+import {StyleSheet} from 'react-native';
+import commonColor from '../../../native-base-theme/variables/commonColor';
 
 const styles = StyleSheet.create({
   container: {
@@ -10,10 +11,35 @@ const styles = StyleSheet.create({
   webViewContainer: {
     flex: 1,
   },
-  navigationContainer: {
-    flexDirection: 'row',
-    position: 'absolute',
-    bottom: 0,
+  navigations: {
+    Container: {
+      flexDirection: 'row',
+      position: 'absolute',
+      bottom: 0,
+    },
+    subContainer:{
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      backgroundColor: commonColor.inverseTextColor,
+      height: 50,
+      flexDirection: 'row',
+      elevation: 80,
+      shadowOffset: {
+        width: 10,
+        height: 3,
+      },
+      shadowOpacity: 0.27,
+      shadowRadius: 4.65,
+      shadowColor: commonColor.textColor,
+      borderTopLeftRadius: 20,
+      borderTopRightRadius: 20,
+      flex: 1,
+      borderTopWidth: 1,
+      borderLeftWidth: 1,
+      borderRightWidth: 1,
+      borderColor: commonColor.inputBorderColor,
+      paddingHorizontal: 16,
+    }
   },
   activityIndicator: {
     flex: 1,
@@ -31,17 +57,30 @@ const styles = StyleSheet.create({
     backfaceVisibility: 'hidden',
   },
   modal: {
-    justifyContent: 'space-between',
-    backgroundColor: 'white',
-    height: 150,
-    width: '80%',
-    borderRadius: 20,
-    alignSelf: 'center',
-    margin: 'auto',
-    elevation: 30,
-    padding: 16,
+    container: {
+      backgroundColor: 'rgba(0,0,0,0.5)',
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    subContainer: {
+      justifyContent: 'space-between',
+      backgroundColor: 'white',
+      width: '80%',
+      borderRadius: 20,
+      alignSelf: 'center',
+      margin: 'auto',
+      elevation: 30,
+      padding: 16,
+    },
     cancel: {
       marginRight: 35,
+    },
+    title: {
+      color: commonColor.brandPrimary,
+      fontWeight: 'bold',
+      alignSelf: 'center',
+      fontSize: 22,
     },
   },
 });

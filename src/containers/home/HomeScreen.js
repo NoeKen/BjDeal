@@ -1,16 +1,17 @@
-import {Container, Icon, Text, Title, View} from 'native-base';
-import React, {useEffect, useRef, useState} from 'react';
+import NetInfo from '@react-native-community/netinfo';
+import { Container, Icon, Text, Title, View } from 'native-base';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   BackHandler,
+  Dimensions,
   Image,
   Modal,
-  TouchableOpacity,
-  ScrollView,
-  RefreshControl,
-  Dimensions,
+  RefreshControl, SafeAreaView, ScrollView,
+  TouchableOpacity
 } from 'react-native';
-import {Actions} from 'react-native-router-flux';
+import { Actions } from 'react-native-router-flux';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import WebView from 'react-native-webview';
 import commonColor from '../../../native-base-theme/variables/commonColor';
 import styles from './styles';
@@ -22,6 +23,7 @@ function wait(timeout) {
   });
 }
 const HomeScreen = () => {
+  const insets = useSafeAreaInsets();
   const webViewRef = useRef();
   const [canGoBack, setCanGoBack] = useState(false);
   const [canGoForward, setCanGoForward] = useState(false);
@@ -36,12 +38,20 @@ const HomeScreen = () => {
   );
   const [stage, setStage] = useState(2);
   const [refreshing, setRefreshing] = React.useState(false);
-
-  const [loaded, setLoaded] = useState(false);
+  const [isOnline, setIsOnline] = useState(true);
+  const [onlineModal, setOnlineModal] = useState(false);
   const [baseUrl, setBaseUrl] = useState('https://www.bj-deal.com/');
 
   useEffect(() => {
     setVisible(true);
+    NetInfo.addEventListener(networkState => {
+      setIsOnline(networkState.isConnected && networkState.isInternetReachable);
+      networkState.isConnected === false
+        ? [setOnlineModal(true),console.log("current offline: ",webViewRef.current)]
+        : null;
+      console.log('isInternetReachable - ', networkState.isInternetReachable);
+      console.log('Is connected? - ', networkState.isConnected);
+    });
   }, []);
 
   useEffect(() => {
@@ -80,8 +90,8 @@ const HomeScreen = () => {
     setRefreshing(true);
     setVisible(true);
     webViewRef.current.reload();
-    wait(2000).then(() => {
-      setVisible(false), setRefreshing(true);
+    wait(200).then(() => {
+      setVisible(false), setRefreshing(false);
     });
   }, [visible, refreshing]);
 
@@ -95,6 +105,7 @@ const HomeScreen = () => {
         {paddingBottom: baseUrl == contactsUrl ? 50 : 20},
       ]}
     >
+      <SafeAreaView style={[styles.container, { paddingTop: insets.top }]}>
       <Modal
         animationType="fade"
         transparent
@@ -103,25 +114,9 @@ const HomeScreen = () => {
           setModalVisible(false);
         }}
       >
-        <View
-          style={{
-            backgroundColor: 'rgba(0,0,0,0.4)',
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <View style={styles.modal}>
-            <Title
-              style={{
-                color: commonColor.brandPrimary,
-                fontWeight: 'bold',
-                alignSelf: 'center',
-                fontSize: 22,
-              }}
-            >
-              Bj-deal
-            </Title>
+        <View style={styles.modal.container}>
+          <View style={[styles.modal.subContainer,{height:150}]}>
+            <Title style={styles.modal.title}>Bj-deal</Title>
             <Text style={{textAlign: 'center', fontSize: 18}}>
               Quitter l'application?
             </Text>
@@ -165,6 +160,7 @@ const HomeScreen = () => {
           }
           style={{flex: 1, height: '100%'}}
         >
+          {/* {!isOnline ? ( */}
           <WebView
             onScroll={e =>
               setEnabled(
@@ -176,6 +172,15 @@ const HomeScreen = () => {
             userAgent="MobileApp-Baneck-Android-Webview"
             ref={webViewRef}
             source={{uri: baseUrl}}
+            // renderError={(e)=>onRefresh()}
+            onHttpError={(nativeEvent)=>{
+              nativeEvent.nativeEvent.code==-8?setOnlineModal(true):setOnlineModal(true)
+              console.log("Error: ", nativeEvent.nativeEvent.code);
+            }}
+            onError={(nativeEvent)=>{
+              setOnlineModal(true)
+              console.log("http Error: ", nativeEvent.nativeEvent.code);
+            }}
             onNavigationStateChange={state => {
               if (stage == 2 && state.url == annonce) {
                 setStage(3);
@@ -197,36 +202,60 @@ const HomeScreen = () => {
             onLoadStart={() => setVisible(false)}
             // onLoadProgress={()=> setVisible(false)}
           />
+          {/* ) : (
+            [ */}
+          <View>
+            <Modal
+              animationType="fade"
+              transparent
+              visible={onlineModal}
+              onRequestClose={async () => {
+                setOnlineModal(false);
+              }}
+            >
+              <View style={styles.modal.container}>
+                <View style={[styles.modal.subContainer,{height:180}]}>
+                  <Title style={styles.modal.title}>Bj-deal</Title>
+                  <Text
+                    style={{
+                      textAlign: 'center',
+                      fontSize: 18,
+                      fontWeight: '800',
+                    }}
+                  >
+                    Pas de connexion internet
+                  </Text>
+                  <Text style={{textAlign: 'justify', fontSize: 15}}>
+                    Activez vos données mobile ou connectez-vous à un réseau
+                    Wi-fi.
+                  </Text>
+                  <TouchableOpacity
+                    onPress={()=>{
+                      isOnline?
+                      [setOnlineModal(false),
+                      onRefresh()]
+                      :[setOnlineModal(false),
+                        setVisible(true),
+                        wait(200).then(() => {
+                          setVisible(false);setOnlineModal(true);
+                        })
+                      ]
+                    }}
+                  >
+                    <Text style={{textAlign:'right',color:commonColor.brandPrimary,fontWeight:'900',fontSize:16}} >Recharger</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Modal>
+          </View>
+          {/* ]
+          )} */}
         </ScrollView>
         {visible ? <ActivityIndicatorElement /> : null}
       </View>
-
-      <View style={styles.navigationContainer}>
-        <View
-          style={{
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            backgroundColor: commonColor.inverseTextColor,
-            height: 50,
-            flexDirection: 'row',
-            elevation: 80,
-            shadowOffset: {
-              width: 10,
-              height: 3,
-            },
-            shadowOpacity: 0.27,
-            shadowRadius: 4.65,
-            shadowColor: commonColor.textColor,
-            borderTopLeftRadius: 20,
-            borderTopRightRadius: 20,
-            flex: 1,
-            borderTopWidth: 1,
-            borderLeftWidth: 1,
-            borderRightWidth: 1,
-            borderColor: commonColor.inputBorderColor,
-            paddingHorizontal: 16,
-          }}
-        >
+      </SafeAreaView>
+      <View style={styles.navigations.Container}>
+        <View style={styles.navigations.subContainer}>
           <Icon
             name="chevron-back"
             onPress={() => {
@@ -257,8 +286,7 @@ const HomeScreen = () => {
           </TouchableOpacity>
           <Icon
             onPress={() => {
-              setCanGoBack(!canGoBack),
-              setCanGoForward(!canGoForward)
+              setCanGoBack(!canGoBack), setCanGoForward(!canGoForward);
               baseUrl == home ? Actions.homeScreen() : setBaseUrl(home),
                 setStage(2);
             }}
@@ -299,6 +327,7 @@ const HomeScreen = () => {
           />
         </View>
       </View>
+      
     </Container>
   );
 };
