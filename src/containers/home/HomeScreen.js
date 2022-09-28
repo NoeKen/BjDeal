@@ -95,7 +95,7 @@ const HomeScreen = () => {
     });
   }, [visible, refreshing]);
 
-  const [height, setHeight] = useState(Dimensions.get('screen').height);
+  const [height, setHeight] = useState(Dimensions.get('screen').height*0.2);
   const [isEnabled, setEnabled] = useState(typeof onRefresh === 'function');
 
   return (
@@ -175,7 +175,7 @@ const HomeScreen = () => {
             // renderError={(e)=>onRefresh()}
             onHttpError={(nativeEvent)=>{
               nativeEvent.nativeEvent.code==-8?setOnlineModal(true):setOnlineModal(true)
-              console.log("Error: ", nativeEvent.nativeEvent.code);
+              // console.log("Error: ", nativeEvent.nativeEvent.code);
             }}
             onError={(nativeEvent)=>{
               setOnlineModal(true)
@@ -254,7 +254,7 @@ const HomeScreen = () => {
         {visible ? <ActivityIndicatorElement /> : null}
       </View>
       </SafeAreaView>
-      <View style={styles.navigations.Container}>
+      <View style={styles.navigations.Cotaniner}>
         <View style={styles.navigations.subContainer}>
           <Icon
             name="chevron-back"
