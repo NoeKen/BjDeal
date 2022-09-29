@@ -8,8 +8,9 @@ import {
   Image,
   Modal,
   RefreshControl, SafeAreaView, ScrollView,
-  TouchableOpacity
+  TouchableOpacity,
 } from 'react-native';
+import DeviceInfo from 'react-native-device-info'; 
 import { Actions } from 'react-native-router-flux';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import WebView from 'react-native-webview';
@@ -42,15 +43,16 @@ const HomeScreen = () => {
   const [onlineModal, setOnlineModal] = useState(false);
   const [baseUrl, setBaseUrl] = useState('https://www.bj-deal.com/');
 
+  console.log("current webview is: ",DeviceInfo.getUserAgent());
   useEffect(() => {
     setVisible(true);
     NetInfo.addEventListener(networkState => {
       setIsOnline(networkState.isConnected && networkState.isInternetReachable);
       networkState.isConnected === false
         ? [setOnlineModal(true),console.log("current offline: ",webViewRef.current)]
-        : null;
-      console.log('isInternetReachable - ', networkState.isInternetReachable);
-      console.log('Is connected? - ', networkState.isConnected);
+        : setOnlineModal(false);
+      // console.log('isInternetReachable - ', networkState.isInternetReachable);
+      // console.log('Is connected? - ', networkState.isConnected);
     });
   }, []);
 
@@ -95,7 +97,7 @@ const HomeScreen = () => {
     });
   }, [visible, refreshing]);
 
-  const [height, setHeight] = useState(Dimensions.get('screen').height);
+  const [height, setHeight] = useState(Dimensions.get('screen').height*0.2);
   const [isEnabled, setEnabled] = useState(typeof onRefresh === 'function');
 
   return (
@@ -169,13 +171,13 @@ const HomeScreen = () => {
               )
             }
             style={[{height}]}
-            userAgent="MobileApp-Baneck-Android-Webview"
+            userAgent={DeviceInfo.getUserAgent() + "MobileApp-Baneck-Android-Webview"}
             ref={webViewRef}
             source={{uri: baseUrl}}
             // renderError={(e)=>onRefresh()}
             onHttpError={(nativeEvent)=>{
               nativeEvent.nativeEvent.code==-8?setOnlineModal(true):setOnlineModal(true)
-              console.log("Error: ", nativeEvent.nativeEvent.code);
+              // console.log("Error: ", nativeEvent.nativeEvent.code);
             }}
             onError={(nativeEvent)=>{
               setOnlineModal(true)
@@ -254,7 +256,7 @@ const HomeScreen = () => {
         {visible ? <ActivityIndicatorElement /> : null}
       </View>
       </SafeAreaView>
-      <View style={styles.navigations.Container}>
+      <View style={styles.navigations.Cotaniner}>
         <View style={styles.navigations.subContainer}>
           <Icon
             name="chevron-back"
@@ -333,3 +335,4 @@ const HomeScreen = () => {
 };
 
 export default HomeScreen;
+// ecole privee la ruche
