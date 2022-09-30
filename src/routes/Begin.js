@@ -4,7 +4,7 @@ import Main from './index';
 
 
 const BeginnerRoute = (
-  <Stack hideNavBar>
+  <Stack hideNavBar  >
     <Scene key="Main" hideNavBar>
       <Router>
         <Stack key="begin" hideNavBar>{Main}</Stack>
