@@ -285,7 +285,7 @@ const HomeScreen = () => {
               setStage(1);
               setBaseUrl(contactsUrl);
             }}>
-            <Icon
+            {/* <Icon
               name="log-in-outline"
               style={{
                 color:
@@ -293,6 +293,17 @@ const HomeScreen = () => {
                     ? commonColor.brandPrimary
                     : commonColor.inactiveTab,
                 fontSize: 25,
+              }}
+            /> */}
+            <Image
+              source={require('../../Assets/login1.png')}
+              style={{
+                width: 22,
+                height: 22,
+                tintColor:
+                  stage == 1
+                    ? commonColor.brandPrimary
+                    : commonColor.inactiveTab,
               }}
             />
           </TouchableOpacity>
@@ -306,7 +317,7 @@ const HomeScreen = () => {
             style={{
               color:
                 stage == 2 ? commonColor.brandPrimary : commonColor.inactiveTab,
-              fontSize: 20,
+              fontSize: 22,
             }}
           />
           <TouchableOpacity

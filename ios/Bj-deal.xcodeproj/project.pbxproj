@@ -276,7 +276,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "BjDeal" */;
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "Bj-deal" */;
 			compatibilityVersion = "Xcode 12.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -568,7 +568,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = QGQ99V4Q7D;
+				DEVELOPMENT_TEAM = A9WB2G986G;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = BjDeal/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Bj-deal";
@@ -601,7 +601,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = QGQ99V4Q7D;
+				DEVELOPMENT_TEAM = A9WB2G986G;
 				INFOPLIST_FILE = BjDeal/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Bj-deal";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -781,7 +781,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "BjDeal" */ = {
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "Bj-deal" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,
