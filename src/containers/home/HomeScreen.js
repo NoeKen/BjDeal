@@ -12,6 +12,7 @@ import {
   ScrollView,
   StatusBar,
   TouchableOpacity,
+  Platform
 } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import {Actions} from 'react-native-router-flux';
@@ -47,7 +48,7 @@ const HomeScreen = () => {
   const [onlineModal, setOnlineModal] = useState(false);
   const [baseUrl, setBaseUrl] = useState('https://www.bj-deal.com/');
 
-  console.log('current webview is: ', DeviceInfo.getUserAgent());
+  // console.log('current webview is: ', DeviceInfo.getUserAgent());
   useEffect(() => {
     setVisible(true);
     NetInfo.addEventListener(networkState => {
@@ -109,9 +110,9 @@ const HomeScreen = () => {
     <Container
       style={[
         styles.container,
-        {paddingBottom: baseUrl == contactsUrl ? 20 : 20},
+        {paddingBottom: Platform.OS === 'ios' ? 20 : 0},
       ]}>
-      <StatusBar backgroundColor="red" barStyle="light-content" />
+      <StatusBar backgroundColor={commonColor.brandPrimary} barStyle="light-content" />
       <SafeAreaView style={[styles.container, {paddingTop: insets.top}]}>
         <Modal
           animationType="fade"
@@ -267,7 +268,7 @@ const HomeScreen = () => {
           {visible ? <ActivityIndicatorElement /> : null}
         </View>
       </SafeAreaView>
-      <View style={styles.navigations.Cotaniner}>
+      {/* <View style={styles.navigations.Cotaniner}> */}
         <View style={styles.navigations.subContainer}>
           <Icon
             name="chevron-back"
@@ -348,7 +349,7 @@ const HomeScreen = () => {
             }}
           />
         </View>
-      </View>
+      {/* </View> */}
     </Container>
   );
 };
