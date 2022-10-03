@@ -21,7 +21,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>3</string>
+	<string>4</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -43,11 +43,11 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>$(PRODUCT_NAME) would like to use your camera</string>
+	<string>$(PRODUCT_NAME) voudrait utiliser la camera de votre appareil afin de prendre des photos qui seront utilisées pour l'annonce que vous créez /string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>$(PRODUCT_NAME) would like access to your photo gallery</string>
+	<string>$(PRODUCT_NAME) voudrait utiliser la gallery photo de votre appareil afin de sélectionner des photos qui seront utilisées pour l'annonce que vous créez</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>

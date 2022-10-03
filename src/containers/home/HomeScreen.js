@@ -7,12 +7,12 @@ import {
   Dimensions,
   Image,
   Modal,
+  Platform,
   RefreshControl,
   SafeAreaView,
   ScrollView,
   StatusBar,
-  TouchableOpacity,
-  Platform
+  TouchableOpacity, 
 } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import {Actions} from 'react-native-router-flux';
@@ -53,7 +53,7 @@ const HomeScreen = () => {
     setVisible(true);
     NetInfo.addEventListener(networkState => {
       setIsOnline(networkState.isConnected && networkState.isInternetReachable);
-      !isOnline ? setOnlineModal(true) : setOnlineModal(false);
+      !isOnline ? setOnlineModal(true) : onRefresh();
       // networkState.isConnected === false
       //   ? [setOnlineModal(true),console.log("current offline: ",webViewRef.current)]
       //   : setOnlineModal(false);
@@ -110,7 +110,7 @@ const HomeScreen = () => {
     <Container
       style={[
         styles.container,
-        {paddingBottom: Platform.OS === 'ios' ? 20 : 0},
+        {paddingBottom: stage === 1 ? 30 : 8},
       ]}>
       <StatusBar backgroundColor={commonColor.brandPrimary} barStyle="light-content" />
       <SafeAreaView style={[styles.container, {paddingTop: insets.top}]}>
@@ -171,7 +171,7 @@ const HomeScreen = () => {
                     e.nativeEvent.contentOffset.y === 0,
                 )
               }
-              style={[{height}]}
+              style={[{height},{backgroundColor:'red'}]}
               userAgent={
                 DeviceInfo.getUserAgent() + 'MobileApp-Baneck-Android-Webview'
               }
@@ -268,7 +268,7 @@ const HomeScreen = () => {
           {visible ? <ActivityIndicatorElement /> : null}
         </View>
       </SafeAreaView>
-      <View style={styles.navigations.Cotaniner}>
+      {/* <View style={styles.navigations.Cotaniner}> */}
         <View style={styles.navigations.subContainer}>
           <Icon
             name="chevron-back"
@@ -349,7 +349,7 @@ const HomeScreen = () => {
             }}
           />
         </View>
-      </View>
+      {/* </View> */}
     </Container>
   );
 };

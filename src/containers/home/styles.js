@@ -1,12 +1,12 @@
-import {StyleSheet} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 import commonColor from '../../../native-base-theme/variables/commonColor';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    // backgroundColor: commonColor.inverseTextColor,
-    // paddingBottom: 30,
+    // backgroundColor: 'rgb(50,250,255)',
+    // paddingBottom: 20,
   },
   webViewContainer: {
     flex: 1,
@@ -16,12 +16,16 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       position: 'absolute',
       bottom: 0,
+      backgroundColor:'transparents'
     },
     subContainer:{
       justifyContent: 'space-between',
+      position: 'absolute',
+      bottom: 0,
+      width:'100%',
       alignItems: 'center',
       backgroundColor: commonColor.inverseTextColor,
-      height: 50,
+      height: Platform.OS==='ios'?70:50,
       flexDirection: 'row',
       position: 'absolute',
       elevation: 80,
@@ -29,19 +33,20 @@ const styles = StyleSheet.create({
       width:'100%',
       shadowOffset: {
         width: 0,
-        height: -10,
+        height: -7,
       },
-      // flex: 1,
-      shadowOpacity: 0.5,
+      shadowOpacity: Platform.OS==='ios'?0.08:0.2,
       // shadowRadius: 4.65,
       shadowColor: commonColor.textColor,
       borderTopLeftRadius: 20,
       borderTopRightRadius: 20,
-      borderTopWidth: 1,
-      borderLeftWidth: 1,
-      borderRightWidth: 1,
-      borderColor: commonColor.inputBorderColor,
-      paddingHorizontal: 25,
+      // flex: 1,
+      borderTopWidth: Platform.OS==='android'? 1:0,
+      borderLeftWidth: Platform.OS==='android'? 1:0,
+      borderRightWidth: Platform.OS==='android'? 1:0,
+      borderColor: Platform.OS==='android'?commonColor.inputBorderColor:'transparent',
+      paddingHorizontal: 16,
+      paddingBottom: Platform.OS==='ios'?10:0
     }
   },
   activityIndicator: {
