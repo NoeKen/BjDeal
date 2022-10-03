@@ -20,9 +20,12 @@ const styles = StyleSheet.create({
     },
     subContainer:{
       justifyContent: 'space-between',
+      position: 'absolute',
+      bottom: 0,
+      width:'100%',
       alignItems: 'center',
       backgroundColor: commonColor.inverseTextColor,
-      height: 50,
+      height: Platform.OS==='ios'?70:50,
       flexDirection: 'row',
       elevation: 80,
       shadowOffset: {
@@ -40,6 +43,7 @@ const styles = StyleSheet.create({
       borderRightWidth: Platform.OS==='android'? 1:0,
       borderColor: Platform.OS==='android'?commonColor.inputBorderColor:'transparent',
       paddingHorizontal: 16,
+      paddingBottom: Platform.OS==='ios'?10:0
     }
   },
   activityIndicator: {

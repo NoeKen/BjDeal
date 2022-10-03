@@ -110,7 +110,7 @@ const HomeScreen = () => {
     <Container
       style={[
         styles.container,
-        {paddingBottom: Platform.OS === 'ios' ? 20 : 0},
+        // {paddingBottom: Platform.OS === 'ios' ? 40 : 0},
       ]}>
       <StatusBar backgroundColor={commonColor.brandPrimary} barStyle="light-content" />
       <SafeAreaView style={[styles.container, {paddingTop: insets.top}]}>
@@ -171,7 +171,7 @@ const HomeScreen = () => {
                     e.nativeEvent.contentOffset.y === 0,
                 )
               }
-              style={[{height}]}
+              style={[{height},{backgroundColor:'red'}]}
               userAgent={
                 DeviceInfo.getUserAgent() + 'MobileApp-Baneck-Android-Webview'
               }
@@ -268,7 +268,7 @@ const HomeScreen = () => {
           {visible ? <ActivityIndicatorElement /> : null}
         </View>
       </SafeAreaView>
-      <View style={styles.navigations.Cotaniner}>
+      {/* <View style={styles.navigations.Cotaniner}> */}
         <View style={styles.navigations.subContainer}>
           <Icon
             name="chevron-back"
@@ -349,7 +349,7 @@ const HomeScreen = () => {
             }}
           />
         </View>
-      </View>
+      {/* </View> */}
     </Container>
   );
 };
