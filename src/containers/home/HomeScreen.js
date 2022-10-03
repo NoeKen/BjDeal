@@ -7,6 +7,7 @@ import {
   Dimensions,
   Image,
   Modal,
+  Platform,
   RefreshControl,
   SafeAreaView,
   ScrollView,
@@ -47,12 +48,12 @@ const HomeScreen = () => {
   const [onlineModal, setOnlineModal] = useState(false);
   const [baseUrl, setBaseUrl] = useState('https://www.bj-deal.com/');
 
-  console.log('current webview is: ', DeviceInfo.getUserAgent());
+  // console.log('current webview is: ', DeviceInfo.getUserAgent());
   useEffect(() => {
     setVisible(true);
     NetInfo.addEventListener(networkState => {
       setIsOnline(networkState.isConnected && networkState.isInternetReachable);
-      !isOnline ? setOnlineModal(true) : setOnlineModal(false);
+      !isOnline ? setOnlineModal(true) : onRefresh();
       // networkState.isConnected === false
       //   ? [setOnlineModal(true),console.log("current offline: ",webViewRef.current)]
       //   : setOnlineModal(false);
@@ -109,9 +110,9 @@ const HomeScreen = () => {
     <Container
       style={[
         styles.container,
-        {paddingBottom: baseUrl == contactsUrl ? 20 : 20},
+        {paddingBottom: Platform.OS === 'ios' ? 20 : 0},
       ]}>
-      <StatusBar backgroundColor="red" barStyle="light-content" />
+      <StatusBar backgroundColor={commonColor.brandPrimary} barStyle="light-content" />
       <SafeAreaView style={[styles.container, {paddingTop: insets.top}]}>
         <Modal
           animationType="fade"
