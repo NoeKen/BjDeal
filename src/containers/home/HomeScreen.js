@@ -57,7 +57,7 @@ const HomeScreen = () => {
       // networkState.isConnected === false
       //   ? [setOnlineModal(true),console.log("current offline: ",webViewRef.current)]
       //   : setOnlineModal(false);
-      console.log('is online ?', isOnline);
+      // console.log('is online ?', isOnline);
       // console.log('Is connected? - ', networkState.isConnected);
     });
   }, []);
@@ -268,7 +268,7 @@ const HomeScreen = () => {
           {visible ? <ActivityIndicatorElement /> : null}
         </View>
       </SafeAreaView>
-      {/* <View style={styles.navigations.Cotaniner}> */}
+      <View style={styles.navigations.Cotaniner}>
         <View style={styles.navigations.subContainer}>
           <Icon
             name="chevron-back"
@@ -349,7 +349,7 @@ const HomeScreen = () => {
             }}
           />
         </View>
-      {/* </View> */}
+      </View>
     </Container>
   );
 };
