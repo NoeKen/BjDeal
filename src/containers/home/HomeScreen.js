@@ -53,7 +53,7 @@ const HomeScreen = () => {
     setVisible(true);
     NetInfo.addEventListener(networkState => {
       setIsOnline(networkState.isConnected && networkState.isInternetReachable);
-      !isOnline ? setOnlineModal(true) : null;
+      !isOnline ? setOnlineModal(true) : onRefresh();
       // networkState.isConnected === false
       //   ? [setOnlineModal(true),console.log("current offline: ",webViewRef.current)]
       //   : setOnlineModal(false);
