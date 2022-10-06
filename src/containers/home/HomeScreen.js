@@ -53,7 +53,7 @@ const HomeScreen = () => {
     setVisible(true);
     NetInfo.addEventListener(networkState => {
       setIsOnline(networkState.isConnected && networkState.isInternetReachable);
-      !isOnline ? setOnlineModal(true) : onRefresh();
+      !isOnline ? setOnlineModal(true) : null;
       // networkState.isConnected === false
       //   ? [setOnlineModal(true),console.log("current offline: ",webViewRef.current)]
       //   : setOnlineModal(false);
@@ -97,7 +97,7 @@ const HomeScreen = () => {
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     setVisible(true);
-    webViewRef.current.reload();
+    webViewRef?.current?.reload();
     wait(200).then(() => {
       setVisible(false), setRefreshing(false);
     });
@@ -171,7 +171,7 @@ const HomeScreen = () => {
                     e.nativeEvent.contentOffset.y === 0,
                 )
               }
-              style={[{height},{backgroundColor:'red'}]}
+              style={[{height}]}
               userAgent={
                 DeviceInfo.getUserAgent() + 'MobileApp-Baneck-Android-Webview'
               }
