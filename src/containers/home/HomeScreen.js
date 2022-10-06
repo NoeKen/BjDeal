@@ -48,7 +48,7 @@ const HomeScreen = () => {
   const [onlineModal, setOnlineModal] = useState(false);
   const [baseUrl, setBaseUrl] = useState('https://www.bj-deal.com/');
 
-  // console.log('current webview is: ', DeviceInfo.getUserAgent());
+  console.log('current webview is: ', DeviceInfo.getUserAgent());
   useEffect(() => {
     setVisible(true);
     NetInfo.addEventListener(networkState => {
@@ -171,7 +171,7 @@ const HomeScreen = () => {
                     e.nativeEvent.contentOffset.y === 0,
                 )
               }
-              style={[{height},{backgroundColor:'red'}]}
+              style={[{height}]}
               userAgent={
                 DeviceInfo.getUserAgent() + 'MobileApp-Baneck-Android-Webview'
               }

@@ -43,7 +43,7 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>$(PRODUCT_NAME) voudrait utiliser la camera de votre appareil afin de prendre des photos qui seront utilisées pour l'annonce que vous créez /string>
+	<string>$(PRODUCT_NAME) voudrait utiliser la camera de votre appareil afin de prendre des photos qui seront utilisées pour l'annonce que vous créez </string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>NSPhotoLibraryUsageDescription</key>
