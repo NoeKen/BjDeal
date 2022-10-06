@@ -12,7 +12,7 @@ import {
   SafeAreaView,
   ScrollView,
   StatusBar,
-  TouchableOpacity, 
+  TouchableOpacity,
 } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import {Actions} from 'react-native-router-flux';
@@ -108,11 +108,11 @@ const HomeScreen = () => {
 
   return (
     <Container
-      style={[
-        styles.container,
-        {paddingBottom: stage === 1 ? 30 : 8},
-      ]}>
-      <StatusBar backgroundColor={commonColor.brandPrimary} barStyle="light-content" />
+      style={[styles.container, {paddingBottom: stage === 1 ? 30 : 8}]}>
+      <StatusBar
+        backgroundColor={commonColor.brandPrimary}
+        barStyle="light-content"
+      />
       <SafeAreaView style={[styles.container, {paddingTop: insets.top}]}>
         <Modal
           animationType="fade"
@@ -179,10 +179,10 @@ const HomeScreen = () => {
               source={{uri: baseUrl}}
               // renderError={(e)=>onRefresh()}
               onHttpError={nativeEvent => {
-                nativeEvent.nativeEvent.code == -8
-                  // ? setOnlineModal(true)
-                  // : setOnlineModal(true);
-                  setOnlineModal(true);
+                nativeEvent.nativeEvent.code == -8;
+                // ? setOnlineModal(true)
+                // : setOnlineModal(true);
+                setOnlineModal(true);
                 // console.log("Error: ", nativeEvent.nativeEvent.code);
               }}
               onError={nativeEvent => {
@@ -269,34 +269,32 @@ const HomeScreen = () => {
         </View>
       </SafeAreaView>
       {/* <View style={styles.navigations.Cotaniner}> */}
-        <View style={styles.navigations.subContainer}>
+      <View style={styles.navigations.subContainer}>
+        <Icon
+          name="chevron-back"
+          onPress={() => {
+            canGoBack ? handleBackPress() : null;
+          }}
+          style={{
+            color: canGoBack
+              ? commonColor.brandPrimary
+              : commonColor.inactiveTab,
+          }}
+        />
+        <TouchableOpacity
+          onPress={() => {
+            setStage(1);
+            setBaseUrl(contactsUrl);
+          }}>
           <Icon
-            name="chevron-back"
-            onPress={() => {
-              canGoBack ? handleBackPress() : null;
-            }}
+            name="person"
             style={{
-              color: canGoBack
-                ? commonColor.brandPrimary
-                : commonColor.inactiveTab,
+              color:
+                stage == 1 ? commonColor.brandPrimary : commonColor.inactiveTab,
+              fontSize: 22,
             }}
           />
-          <TouchableOpacity
-            onPress={() => {
-              setStage(1);
-              setBaseUrl(contactsUrl);
-            }}>
-            {/* <Icon
-              name="log-in-outline"
-              style={{
-                color:
-                  stage == 1
-                    ? commonColor.brandPrimary
-                    : commonColor.inactiveTab,
-                fontSize: 25,
-              }}
-            /> */}
-            <Image
+          {/* <Image
               source={require('../../Assets/login1.png')}
               style={{
                 width: 22,
@@ -306,14 +304,15 @@ const HomeScreen = () => {
                     ? commonColor.brandPrimary
                     : commonColor.inactiveTab,
               }}
-            />
-          </TouchableOpacity>
+            /> */}
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            setCanGoBack(!canGoBack), setCanGoForward(!canGoForward);
+            baseUrl == home ? Actions.homeScreen() : setBaseUrl(home),
+              setStage(2);
+          }}>
           <Icon
-            onPress={() => {
-              setCanGoBack(!canGoBack), setCanGoForward(!canGoForward);
-              baseUrl == home ? Actions.homeScreen() : setBaseUrl(home),
-                setStage(2);
-            }}
             name="home"
             style={{
               color:
@@ -321,34 +320,33 @@ const HomeScreen = () => {
               fontSize: 22,
             }}
           />
-          <TouchableOpacity
-            onPress={() => {
-              setBaseUrl(annonce), setStage(3);
-            }}>
-            <Image
-              source={require('../../Assets/addPub.png')}
-              style={{
-                width: 28,
-                height: 28,
-                tintColor:
-                  stage == 3
-                    ? commonColor.brandPrimary
-                    : commonColor.inactiveTab,
-              }}
-            />
-          </TouchableOpacity>
-          <Icon
-            name="chevron-forward"
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            setBaseUrl(annonce), setStage(3);
+          }}>
+          <Image
+            source={require('../../Assets/addPub.png')}
             style={{
-              color: canGoForward
-                ? commonColor.brandPrimary
-                : commonColor.inactiveTab,
-            }}
-            onPress={() => {
-              canGoForward ? handleForwardPress() : null;
+              width: 28,
+              height: 28,
+              tintColor:
+                stage == 3 ? commonColor.brandPrimary : commonColor.inactiveTab,
             }}
           />
-        </View>
+        </TouchableOpacity>
+        <Icon
+          name="chevron-forward"
+          style={{
+            color: canGoForward
+              ? commonColor.brandPrimary
+              : commonColor.inactiveTab,
+          }}
+          onPress={() => {
+            canGoForward ? handleForwardPress() : null;
+          }}
+        />
+      </View>
       {/* </View> */}
     </Container>
   );
