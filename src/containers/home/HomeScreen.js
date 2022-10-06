@@ -12,7 +12,7 @@ import {
   SafeAreaView,
   ScrollView,
   StatusBar,
-  TouchableOpacity,
+  TouchableOpacity, 
 } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import {Actions} from 'react-native-router-flux';
@@ -57,7 +57,7 @@ const HomeScreen = () => {
       // networkState.isConnected === false
       //   ? [setOnlineModal(true),console.log("current offline: ",webViewRef.current)]
       //   : setOnlineModal(false);
-      console.log('is online ?', isOnline);
+      // console.log('is online ?', isOnline);
       // console.log('Is connected? - ', networkState.isConnected);
     });
   }, []);
@@ -97,7 +97,7 @@ const HomeScreen = () => {
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     setVisible(true);
-    webViewRef.current.reload();
+    webViewRef?.current?.reload();
     wait(200).then(() => {
       setVisible(false), setRefreshing(false);
     });
@@ -110,7 +110,7 @@ const HomeScreen = () => {
     <Container
       style={[
         styles.container,
-        // {paddingBottom: Platform.OS === 'ios' ? 40 : 0},
+        {paddingBottom: stage === 1 ? 30 : 8},
       ]}>
       <StatusBar backgroundColor={commonColor.brandPrimary} barStyle="light-content" />
       <SafeAreaView style={[styles.container, {paddingTop: insets.top}]}>
