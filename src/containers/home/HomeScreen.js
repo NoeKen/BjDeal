@@ -108,7 +108,8 @@ const HomeScreen = () => {
 
   return (
     <Container
-      style={[styles.container, {paddingBottom: stage === 1 ? 30 : 8}]}>
+      // style={[styles.container, {paddingBottom: stage === 1 ? Platform.OS== 'ios'?60: 30 : -10}]}
+      >
       <StatusBar
         backgroundColor={commonColor.brandPrimary}
         barStyle="light-content"
@@ -173,7 +174,7 @@ const HomeScreen = () => {
               }
               style={[{height}]}
               userAgent={
-                DeviceInfo.getUserAgent() + 'MobileApp-Baneck-Android-Webview'
+                DeviceInfo.getUserAgent() + Platform.OS=='ios'? 'MobileApp-Baneck-Ios-Webview':'MobileApp-Baneck-Android-Webview'
               }
               ref={webViewRef}
               source={{uri: baseUrl}}
