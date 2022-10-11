@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21225" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
-    <device id="retina4_0" orientation="portrait" appearance="light"/>
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
@@ -14,34 +14,26 @@
             <objects>
                 <viewController id="01J-lp-oVM" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Bj-deal" textAlignment="center" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="GJd-Yh-RWb">
-                                <rect key="frame" x="0.0" y="476.5" width="320" height="43"/>
+                                <rect key="frame" x="0.0" y="725" width="393" height="43"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="36"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="bottomRight" image="Image" translatesAutoresizingMaskIntoConstraints="NO" id="sXF-eC-QTD">
-                                <rect key="frame" x="32" y="156" width="256" height="256"/>
+                                <rect key="frame" x="68.666666666666686" y="201" width="256" height="256"/>
+                                <rect key="contentStretch" x="0.0" y="0.0" width="0.10000000000000001" height="0.10000000000000001"/>
                                 <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="default"/>
-                            </imageView>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="launchScreen" translatesAutoresizingMaskIntoConstraints="NO" id="egW-KU-hfT">
-                                <rect key="frame" x="0.0" y="0.0" width="319.5" height="568"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" secondItem="egW-KU-hfT" secondAttribute="height" multiplier="375:667" id="lFm-40-VXt" userLabel="aspect = 370:667"/>
-                                </constraints>
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Bcu-3y-fUS"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="egW-KU-hfT" firstAttribute="leading" secondItem="GJd-Yh-RWb" secondAttribute="leading" id="114-t3-JJs"/>
-                            <constraint firstItem="egW-KU-hfT" firstAttribute="bottom" secondItem="Bcu-3y-fUS" secondAttribute="bottom" id="9gQ-E3-RAA"/>
                             <constraint firstItem="Bcu-3y-fUS" firstAttribute="centerX" secondItem="GJd-Yh-RWb" secondAttribute="centerX" id="Q3B-4B-g5h"/>
-                            <constraint firstItem="egW-KU-hfT" firstAttribute="top" secondItem="Bcu-3y-fUS" secondAttribute="top" id="WsW-QZ-TEl"/>
                             <constraint firstItem="sXF-eC-QTD" firstAttribute="centerX" secondItem="Bcu-3y-fUS" secondAttribute="centerX" id="YMe-Be-yRC"/>
-                            <constraint firstItem="sXF-eC-QTD" firstAttribute="centerY" secondItem="Bcu-3y-fUS" secondAttribute="centerY" id="mIm-vN-3vY"/>
+                            <constraint firstItem="sXF-eC-QTD" firstAttribute="centerY" secondItem="Bcu-3y-fUS" secondAttribute="centerY" multiplier="3:4" id="mIm-vN-3vY"/>
                             <constraint firstItem="GJd-Yh-RWb" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="bottom" multiplier="14:16" constant="1" id="moa-c2-u7t"/>
                             <constraint firstItem="GJd-Yh-RWb" firstAttribute="leading" secondItem="Bcu-3y-fUS" secondAttribute="leading" symbolic="YES" id="x7j-FC-K8j"/>
                         </constraints>
@@ -54,7 +46,6 @@
     </scenes>
     <resources>
         <image name="Image" width="256" height="256"/>
-        <image name="launchScreen" width="270" height="480"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
