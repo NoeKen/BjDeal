@@ -60,9 +60,7 @@ const HomeScreen = () => {
       // console.log('is online ?', isOnline);
       // console.log('Is connected? - ', networkState.isConnected);
     });
-  }, []);
 
-  useEffect(() => {
     const backAction = () => {
       setModalVisible(true);
       return true;
@@ -75,6 +73,20 @@ const HomeScreen = () => {
 
     return () => backHandler.remove();
   }, []);
+
+  // useEffect(() => {
+  //   const backAction = () => {
+  //     setModalVisible(true);
+  //     return true;
+  //   };
+
+  //   const backHandler = BackHandler.addEventListener(
+  //     'hardwareBackPress',
+  //     backAction,
+  //   );
+
+  //   return () => backHandler.remove();
+  // }, []);
 
   async function handleBackPress() {
     await webViewRef.current.goBack();
@@ -90,7 +102,7 @@ const HomeScreen = () => {
 
   const ActivityIndicatorElement = () => (
     <View style={styles.activityIndicator}>
-      <ActivityIndicator color={commonColor.brandPrimary} size="large" />
+      <ActivityIndicator color={commonColor.brandPrimary} size="small" />
     </View>
   );
 
@@ -98,9 +110,9 @@ const HomeScreen = () => {
     setRefreshing(true);
     setVisible(true);
     webViewRef?.current?.reload();
-    wait(200).then(() => {
-      setVisible(false), setRefreshing(false);
-    });
+    // wait(0).then(() => {
+    //   setVisible(false), setRefreshing(false);
+    // });
   }, [visible, refreshing]);
 
   const [height, setHeight] = useState(Dimensions.get('screen').height * 0.2);
@@ -109,11 +121,11 @@ const HomeScreen = () => {
   return (
     <Container
       style={[styles.container, {paddingBottom: stage === 1 ? 30 : 8}]}>
+      <SafeAreaView style={[styles.container, {paddingTop: insets.top}]}>
       <StatusBar
         backgroundColor={commonColor.brandPrimary}
         barStyle="light-content"
       />
-      <SafeAreaView style={[styles.container, {paddingTop: insets.top}]}>
         <Modal
           animationType="fade"
           transparent
@@ -207,7 +219,8 @@ const HomeScreen = () => {
                 setCanGoForward(forward);
               }}
               // onLoad={() => setVisible(false)}
-              onLoadStart={() => setVisible(false)}
+              onLoadStart={() => setVisible(true)}
+              onLoadEnd={() => setVisible(false)}
               // onLoadProgress={()=> setVisible(false)}
             />
             {/* ) : (

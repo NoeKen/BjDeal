@@ -2,6 +2,8 @@ import React from 'react';
 import SplashScreen from 'react-native-splash-screen';
 import Root from './src/index';
 import HomeScreen from './src/containers/home/HomeScreen';
+import { Router, Stack } from 'react-native-router-flux';
+import Routes from './src/routes/Begin';
 
 class App extends React.Component {
   constructor() {
@@ -14,7 +16,12 @@ class App extends React.Component {
   //   ),[])
   render() {
     // return <HomeScreen />;
-    return <Root />;
+    // return <Root />;
+    return (
+      <Router>
+        <Stack key="root">{Routes}</Stack>
+      </Router>
+    );
   }
 }
 

@@ -23,8 +23,13 @@ public class MainActivity extends ReactActivity {
   @Override
     protected void onCreate(Bundle savedInstanceState) {
         SplashScreen.show(this);
-        super.onCreate(savedInstanceState);
+        super.onCreate(null);
     }
+
+  // @Override
+  //   protected void onCreate(Bundle savedInstanceState) {
+  //       super.onCreate(null);
+  //   }
 
   /**
    * Returns the instance of the {@link ReactActivityDelegate}. There the RootView is created and
