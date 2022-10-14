@@ -47,10 +47,11 @@ const HomeScreen = () => {
   const [isOnline, setIsOnline] = useState(true);
   const [onlineModal, setOnlineModal] = useState(false);
   const [baseUrl, setBaseUrl] = useState('https://www.bj-deal.com/');
+  const [onMount, setOnMount] = useState(false)
 
-  console.log('current webview is: ', DeviceInfo.getUserAgent());
+  console.log('onMount: ', onMount);
   useEffect(() => {
-    setVisible(true);
+    setOnMount(true);
     NetInfo.addEventListener(networkState => {
       setIsOnline(networkState.isConnected && networkState.isInternetReachable);
       !isOnline ? setOnlineModal(true) : onRefresh();
@@ -102,17 +103,18 @@ const HomeScreen = () => {
 
   const ActivityIndicatorElement = () => (
     <View style={styles.activityIndicator}>
-      <ActivityIndicator color={commonColor.brandPrimary} size="small" />
+      <ActivityIndicator color={commonColor.brandPrimary} size="large" />
     </View>
   );
 
   const onRefresh = React.useCallback(() => {
+    setOnMount(true)
     setRefreshing(true);
     setVisible(true);
     webViewRef?.current?.reload();
-    // wait(0).then(() => {
-    //   setVisible(false), setRefreshing(false);
-    // });
+    wait(200).then(() => {
+      setVisible(false), setRefreshing(false);
+    });
   }, [visible, refreshing]);
 
   const [height, setHeight] = useState(Dimensions.get('screen').height * 0.2);
@@ -218,9 +220,9 @@ const HomeScreen = () => {
                 setCanGoBack(back);
                 setCanGoForward(forward);
               }}
+              renderLoading={()=>ActivityIndicatorElement}
               // onLoad={() => setVisible(false)}
-              onLoadStart={() => setVisible(true)}
-              onLoadEnd={() => setVisible(false)}
+              // onLoadStart={() => setVisible(true)}
               // onLoadProgress={()=> setVisible(false)}
             />
             {/* ) : (
