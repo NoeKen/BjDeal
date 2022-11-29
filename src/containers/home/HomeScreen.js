@@ -1,6 +1,7 @@
 import NetInfo from '@react-native-community/netinfo';
 import {Container, Icon, Text, Title, View} from 'native-base';
 import React, {useEffect, useRef, useState} from 'react';
+import {check, PERMISSIONS, request, RESULTS} from 'react-native-permissions';
 import {
   ActivityIndicator,
   BackHandler,
@@ -47,10 +48,12 @@ const HomeScreen = () => {
   const [isOnline, setIsOnline] = useState(true);
   const [onlineModal, setOnlineModal] = useState(false);
   const [baseUrl, setBaseUrl] = useState('https://www.bj-deal.com/');
-  const [onMount, setOnMount] = useState(false)
+  const [onMount, setOnMount] = useState(false);
+  const [curUrl, setCurUrl] = useState(' ');
 
-  console.log('onMount: ', onMount);
+  // console.log('onMount: ', onMount);
   useEffect(() => {
+    handleCameraPermission();
     setOnMount(true);
     NetInfo.addEventListener(networkState => {
       setIsOnline(networkState.isConnected && networkState.isInternetReachable);
@@ -108,7 +111,7 @@ const HomeScreen = () => {
   );
 
   const onRefresh = React.useCallback(() => {
-    setOnMount(true)
+    setOnMount(true);
     setRefreshing(true);
     setVisible(true);
     webViewRef?.current?.reload();
@@ -119,22 +122,54 @@ const HomeScreen = () => {
 
   const [height, setHeight] = useState(Dimensions.get('screen').height * 0.2);
   const [isEnabled, setEnabled] = useState(typeof onRefresh === 'function');
+  // const requestCameraPermission = async () => {
+  //   try {
+  //   const granted = await PermissionsAndroid.request(
+  //   PermissionsAndroid.PERMISSIONS.CAMERA,
+  //   {
+  //   title: "Permission for Captureeeee Extraaaodrinary Application",
+  //   message:
+  //   "For your beautiful pictures, " +
+  //   "Grant permission to Captureeeee Extraaaordinary Application",
+  //   buttonNeutral: "Not Right Now!",
+  //   buttonNegative: "Cancel",
+  //   buttonPositive: "Alright"
+  //   })}};
+
+  const handleCameraPermission = async () => {
+    const permission =
+      Platform.OS === 'ios'
+        ? PERMISSIONS.IOS.CAMERA
+        : PERMISSIONS.ANDROID.CAMERA;
+    console.log(permission);
+    const res = await check(permission);
+    if (res === RESULTS.GRANTED) {
+      setCameraGranted(true);
+    } else if (res === RESULTS.DENIED) {
+      const res2 = await request(permission);
+      res2 === RESULTS.GRANTED
+        ? setCameraGranted(true)
+        : setCameraGranted(false);
+    }
+  };
 
   return (
     <Container
-      style={[styles.container, {paddingBottom: stage === 1 ? 30 : 8}]}>
+      style={[styles.container, {paddingBottom: stage === 1 ? 30 : 8}]}
+    >
       <SafeAreaView style={[styles.container, {paddingTop: insets.top}]}>
-      <StatusBar
-        backgroundColor={commonColor.brandPrimary}
-        barStyle="light-content"
-      />
+        <StatusBar
+          backgroundColor={commonColor.brandPrimary}
+          barStyle="light-content"
+        />
         <Modal
           animationType="fade"
           transparent
           visible={modalVisible}
           onRequestClose={async () => {
             setModalVisible(false);
-          }}>
+          }}
+        >
           <View style={styles.modal.container}>
             <View style={[styles.modal.subContainer, {height: 150}]}>
               <Title style={styles.modal.title}>Bj-deal</Title>
@@ -147,18 +182,21 @@ const HomeScreen = () => {
                   flexDirection: 'row',
                   justifyContent: 'flex-end',
                   marginRight: 10,
-                }}>
+                }}
+              >
                 <TouchableOpacity
                   style={{marginRight: 15}}
                   onPress={() => {
                     setModalVisible(false);
-                  }}>
+                  }}
+                >
                   <Text style={styles.modal.cancel}>ANNULER</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => {
                     BackHandler.exitApp();
-                  }}>
+                  }}
+                >
                   <Text style={{fontWeight: '700'}}>OK</Text>
                 </TouchableOpacity>
               </View>
@@ -167,6 +205,7 @@ const HomeScreen = () => {
         </Modal>
         <View style={styles.webViewContainer}>
           <ScrollView
+            overScrollMode="never"
             onLayout={e => setHeight(e.nativeEvent.layout.height)}
             refreshControl={
               <RefreshControl
@@ -176,7 +215,8 @@ const HomeScreen = () => {
                 colors={[commonColor.brandPrimary]}
               />
             }
-            style={{flex: 1, height: '100%'}}>
+            style={{flex: 1, height: '100%'}}
+          >
             {/* {!isOnline ? ( */}
             <WebView
               onScroll={e =>
@@ -187,43 +227,53 @@ const HomeScreen = () => {
               }
               style={[{height}]}
               userAgent={
-                DeviceInfo.getUserAgent() + Platform.OS=='ios'? 'MobileApp-Baneck-Ios-Webview':'MobileApp-Baneck-Android-Webview'
+                DeviceInfo.getUserAgent() + Platform.OS == 'ios'
+                  ? 'MobileApp-Baneck-Ios-Webview'
+                  : 'MobileApp-Baneck-Android-Webview'
               }
               ref={webViewRef}
               source={{uri: baseUrl}}
               // renderError={(e)=>onRefresh()}
               onHttpError={nativeEvent => {
                 nativeEvent.nativeEvent.code == -8;
-                // ? setOnlineModal(true)
-                // : setOnlineModal(true);
                 setOnlineModal(true);
-                // console.log("Error: ", nativeEvent.nativeEvent.code);
               }}
               onError={nativeEvent => {
                 setOnlineModal(true);
                 console.log('http Error: ', nativeEvent.nativeEvent.code);
               }}
               onNavigationStateChange={state => {
-                if (stage == 2 && state.url == annonce) {
+                setCurUrl(state.url);
+                console.log('current url:', curUrl);
+                if (
+                  curUrl.includes('https://www.bj-deal.com/pst_stp_two.php')
+                ) {
+                  handleCameraPermission()
+                  console.log('the url include the second step of annonce');
+                } else 'it do not include the second step';
+                if (
+                  state.url == annonce ||
+                  curUrl.includes('https://www.bj-deal.com/pst_stp_two.php')
+                ) {
                   setStage(3);
-                } else if (stage == 2 && state.url == contactsUrl) {
+                } else if (
+                  state.url == contactsUrl ||
+                  curUrl.includes('https://www.bj-deal.com/user_account.php')
+                ) {
                   setStage(1);
-                } else if (stage == 1 && state.url !== contactsUrl) {
-                  setBaseUrl(state.url);
-                  setStage(2);
-                } else if (stage == 3 && state.url !== annonce) {
-                  setBaseUrl(state.url);
-                  setStage(2);
-                }
+                  // } else if (state.url !== contactsUrl) {
+                  //   setBaseUrl(state.url);
+                  //   setStage(2);
+                  // } else if (state.url !== annonce) {
+                  //   setBaseUrl(state.url);
+                  //   setStage(2);
+                } else setStage(2);
                 const back = state.canGoBack;
                 const forward = state.canGoForward;
                 setCanGoBack(back);
                 setCanGoForward(forward);
               }}
-              renderLoading={()=>ActivityIndicatorElement}
-              // onLoad={() => setVisible(false)}
-              // onLoadStart={() => setVisible(true)}
-              // onLoadProgress={()=> setVisible(false)}
+              renderLoading={() => ActivityIndicatorElement}
             />
             {/* ) : (
             [ */}
@@ -234,7 +284,8 @@ const HomeScreen = () => {
                 visible={onlineModal}
                 onRequestClose={async () => {
                   setOnlineModal(false);
-                }}>
+                }}
+              >
                 <View style={styles.modal.container}>
                   <View style={[styles.modal.subContainer, {height: 180}]}>
                     <Title style={styles.modal.title}>Bj-deal</Title>
@@ -243,7 +294,8 @@ const HomeScreen = () => {
                         textAlign: 'center',
                         fontSize: 18,
                         fontWeight: '800',
-                      }}>
+                      }}
+                    >
                       Pas de connexion internet
                     </Text>
                     <Text style={{textAlign: 'justify', fontSize: 15}}>
@@ -262,14 +314,16 @@ const HomeScreen = () => {
                                 setOnlineModal(true);
                               }),
                             ];
-                      }}>
+                      }}
+                    >
                       <Text
                         style={{
                           textAlign: 'right',
                           color: commonColor.brandPrimary,
                           fontWeight: '900',
                           fontSize: 16,
-                        }}>
+                        }}
+                      >
                         Recharger
                       </Text>
                     </TouchableOpacity>
@@ -285,27 +339,46 @@ const HomeScreen = () => {
       </SafeAreaView>
       {/* <View style={styles.navigations.Cotaniner}> */}
       <View style={styles.navigations.subContainer}>
-        <Icon
-          name="chevron-back"
+        <TouchableOpacity
+          style={{
+            // backgroundColor: 'red',
+            justifyContent: 'center',
+            width: '20%',
+            alignItems: 'center',
+          }}
           onPress={() => {
             canGoBack ? handleBackPress() : null;
           }}
-          style={{
-            color: canGoBack
-              ? commonColor.brandPrimary
-              : commonColor.inactiveTab,
-          }}
-        />
+        >
+          <Icon
+            name="chevron-back"
+            style={{
+              color: canGoBack
+                ? commonColor.brandPrimary
+                : commonColor.inactiveTab,
+            }}
+          />
+        </TouchableOpacity>
         <TouchableOpacity
+          style={{
+            // backgroundColor: 'green',
+            justifyContent: 'center',
+            width: '20%',
+            alignItems: 'center',
+            backgroundColor:
+              stage == 1 ? commonColor.brandPrimaryOpacity : 'transparent',
+          }}
           onPress={() => {
             setStage(1);
             setBaseUrl(contactsUrl);
-          }}>
+          }}
+        >
           <Icon
             name="person"
             style={{
               color:
                 stage == 1 ? commonColor.brandPrimary : commonColor.inactiveTab,
+              elevation: 10,
               fontSize: 22,
             }}
           />
@@ -322,11 +395,20 @@ const HomeScreen = () => {
             /> */}
         </TouchableOpacity>
         <TouchableOpacity
+          style={{
+            // backgroundColor: 'blue',
+            justifyContent: 'center',
+            width: '20%',
+            alignItems: 'center',
+            backgroundColor:
+              stage == 2 ? commonColor.brandPrimaryOpacity : 'transparent',
+          }}
           onPress={() => {
             setCanGoBack(!canGoBack), setCanGoForward(!canGoForward);
             baseUrl == home ? Actions.homeScreen() : setBaseUrl(home),
               setStage(2);
-          }}>
+          }}
+        >
           <Icon
             name="home"
             style={{
@@ -337,9 +419,18 @@ const HomeScreen = () => {
           />
         </TouchableOpacity>
         <TouchableOpacity
+          style={{
+            // backgroundColor: 'orange',
+            justifyContent: 'center',
+            width: '20%',
+            alignItems: 'center',
+            backgroundColor:
+              stage == 3 ? commonColor.brandPrimaryOpacity : 'transparent',
+          }}
           onPress={() => {
             setBaseUrl(annonce), setStage(3);
-          }}>
+          }}
+        >
           <Image
             source={require('../../Assets/addPub.png')}
             style={{
@@ -350,17 +441,26 @@ const HomeScreen = () => {
             }}
           />
         </TouchableOpacity>
-        <Icon
-          name="chevron-forward"
+        <TouchableOpacity
           style={{
-            color: canGoForward
-              ? commonColor.brandPrimary
-              : commonColor.inactiveTab,
+            // backgroundColor: 'pink',
+            justifyContent: 'center',
+            width: '20%',
+            alignItems: 'center',
           }}
-          onPress={() => {
-            canGoForward ? handleForwardPress() : null;
-          }}
-        />
+        >
+          <Icon
+            name="chevron-forward"
+            style={{
+              color: canGoForward
+                ? commonColor.brandPrimary
+                : commonColor.inactiveTab,
+            }}
+            onPress={() => {
+              canGoForward ? handleForwardPress() : null;
+            }}
+          />
+        </TouchableOpacity>
       </View>
       {/* </View> */}
     </Container>
@@ -368,4 +468,3 @@ const HomeScreen = () => {
 };
 
 export default HomeScreen;
-// ecole privee la ruche

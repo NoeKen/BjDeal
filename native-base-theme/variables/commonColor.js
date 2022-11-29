@@ -133,6 +133,7 @@ export default {
 
   // Color
   brandPrimary: platform === PLATFORM.IOS ? '#ff763b' : '#ff7f04',
+  brandPrimaryOpacity: platform === PLATFORM.IOS ? '#ff763b1e' : '#ff7f041e',
   brandInfo: '#ff763b',
   brandSuccess: '#5cb85c',
   brandDanger: '#de5b49',
