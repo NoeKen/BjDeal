@@ -50,6 +50,7 @@ const HomeScreen = () => {
   const [baseUrl, setBaseUrl] = useState('https://www.bj-deal.com/');
   const [onMount, setOnMount] = useState(false);
   const [curUrl, setCurUrl] = useState(' ');
+  const [showTabs, setShowTabs]=useState(true)
 
   // console.log('onMount: ', onMount);
   useEffect(() => {
@@ -207,6 +208,7 @@ const HomeScreen = () => {
           <ScrollView
             overScrollMode="never"
             onLayout={e => setHeight(e.nativeEvent.layout.height)}
+            onScroll={()=>console.log('scrolling')}
             refreshControl={
               <RefreshControl
                 onRefresh={onRefresh}
@@ -220,10 +222,12 @@ const HomeScreen = () => {
             {/* {!isOnline ? ( */}
             <WebView
               onScroll={e =>
-                setEnabled(
+                {setEnabled(
                   typeof onRefresh === 'function' &&
                     e.nativeEvent.contentOffset.y === 0,
-                )
+                ),
+                setShowTabs(false);
+              }
               }
               style={[{height}]}
               userAgent={
@@ -338,7 +342,7 @@ const HomeScreen = () => {
         </View>
       </SafeAreaView>
       {/* <View style={styles.navigations.Cotaniner}> */}
-      <View style={styles.navigations.subContainer}>
+      {showTabs ? <View style={styles.navigations.subContainer}>
         <TouchableOpacity
           style={{
             // backgroundColor: 'red',
@@ -461,7 +465,12 @@ const HomeScreen = () => {
             }}
           />
         </TouchableOpacity>
-      </View>
+      </View>:<TouchableOpacity 
+      onPress={()=>setShowTabs(true)}
+      style={{position:'absolute',backgroundColor:commonColor.brandPrimary,paddingVertical:15,paddingHorizontal:10,bottom:55, borderTopLeftRadius:20, borderBottomLeftRadius:20,right:0}} >
+        <Text>Show Tabs</Text>
+      </TouchableOpacity>
+}
       {/* </View> */}
     </Container>
   );
