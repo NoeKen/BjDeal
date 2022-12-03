@@ -19,34 +19,37 @@ const styles = StyleSheet.create({
       // elevation: 80,
       // backgroundColor:'transparents'
     },
-    subContainer:{
+    subContainer: {
       // justifyContent: 'space-between',
       // position: 'absolute',
       // bottom: 0,
-      width:'100%',
+      width: '100%',
       // alignItems: 'center',
       backgroundColor: commonColor.inverseTextColor,
-      height: Platform.OS==='ios'?70:50,
+      height: Platform.OS === 'ios' ? 70 : 50,
       flexDirection: 'row',
       position: 'absolute',
       elevation: 80,
-      bottom:0,
+      bottom: 0,
       // width:'100%',
       shadowOffset: {
         width: 0,
         height: -7,
       },
-      shadowOpacity: Platform.OS==='ios'?0.08:0.1,
+      shadowOpacity: Platform.OS === 'ios' ? 0.08 : 0.1,
       shadowColor: commonColor.textColor,
       borderTopLeftRadius: 15,
       borderTopRightRadius: 15,
-      borderTopWidth: Platform.OS==='android'? 1:0,
-      borderLeftWidth: Platform.OS==='android'? 1:0,
-      borderRightWidth: Platform.OS==='android'? 1:0,
-      borderColor: Platform.OS==='android'?commonColor.inputBorderColor:'transparent',
+      borderTopWidth: Platform.OS === 'android' ? 1 : 0,
+      borderLeftWidth: Platform.OS === 'android' ? 1 : 0,
+      borderRightWidth: Platform.OS === 'android' ? 1 : 0,
+      borderColor:
+        Platform.OS === 'android'
+          ? commonColor.inputBorderColor
+          : 'transparent',
       // paddingHorizontal: 16,
-      paddingBottom: Platform.OS==='ios'?10:0
-    }
+      paddingBottom: Platform.OS === 'ios' ? 10 : 0,
+    },
   },
   activityIndicator: {
     flex: 1,
@@ -89,6 +92,17 @@ const styles = StyleSheet.create({
       alignSelf: 'center',
       fontSize: 22,
     },
+  },
+  permBtn: {
+    position: 'absolute',
+    backgroundColor: commonColor.brandPrimary,
+    paddingVertical: 15,
+    paddingHorizontal: 10,
+    bottom: 55,
+    borderTopLeftRadius: 20,
+    borderBottomLeftRadius: 20,
+    right: 0,
+    elevation: 50,
   },
 });
 

@@ -4,6 +4,7 @@ import Root from './src/index';
 import HomeScreen from './src/containers/home/HomeScreen';
 import { Router, Stack } from 'react-native-router-flux';
 import Routes from './src/routes/Begin';
+import { handleCameraPermission } from './src/components/UI/permission';
 
 class App extends React.Component {
   constructor() {
@@ -11,12 +12,11 @@ class App extends React.Component {
   }
   async componentDidMount() {
     SplashScreen.hide();
+    // handleCameraPermission()
   }
   // useEffect((
   //   ),[])
   render() {
-    // return <HomeScreen />;
-    // return <Root />;
     return (
       <Router>
         <Stack key="root">{Routes}</Stack>

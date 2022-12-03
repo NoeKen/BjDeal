@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@react-native-community/netinfo": "^9.3.6",
+    "@smakss/react-scroll-direction": "^1.0.1",
     "native-base": "2",
     "react": "17.0.2",
     "react-native": "0.68.2",

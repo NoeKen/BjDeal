@@ -1,9 +1,10 @@
 import NetInfo from '@react-native-community/netinfo';
-import {Container, Icon, Text, Title, View} from 'native-base';
-import React, {useEffect, useRef, useState} from 'react';
-import {check, PERMISSIONS, request, RESULTS} from 'react-native-permissions';
+import { Container, Icon, Text, View } from 'native-base';
+import React, { useEffect, useRef, useState } from 'react';
+
 import {
   ActivityIndicator,
+  Animated,
   BackHandler,
   Dimensions,
   Image,
@@ -13,13 +14,17 @@ import {
   SafeAreaView,
   ScrollView,
   StatusBar,
-  TouchableOpacity,
+  TouchableOpacity
 } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
-import {Actions} from 'react-native-router-flux';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import { Actions } from 'react-native-router-flux';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import WebView from 'react-native-webview';
 import commonColor from '../../../native-base-theme/variables/commonColor';
+import ExitModal from '../../components/exitModal';
+import InfosPermission from '../../components/InfosPermission';
+import NetworkModal from '../../components/networkModal';
+import { handleCameraPermission } from '../../components/UI/permission';
 import styles from './styles';
 
 // eslint-disable-next-line react/prop-types
@@ -41,7 +46,6 @@ const HomeScreen = () => {
   const [home, setHome] = useState('https://www.bj-deal.com/');
   const [contactsUrl, setContactsUrl] = useState(
     'https://www.bj-deal.com/connexion.php',
-    // 'https://www.bj-deal.com/meet-us.php',
   );
   const [stage, setStage] = useState(2);
   const [refreshing, setRefreshing] = React.useState(false);
@@ -50,20 +54,19 @@ const HomeScreen = () => {
   const [baseUrl, setBaseUrl] = useState('https://www.bj-deal.com/');
   const [onMount, setOnMount] = useState(false);
   const [curUrl, setCurUrl] = useState(' ');
-  const [showTabs, setShowTabs]=useState(true)
+  const [showTabs, setShowTabs] = useState(true);
+  const translationY = useRef(new Animated.Value(0)).current;
+  const translationX = useRef(new Animated.Value(200)).current;
+  const transInfoPerm = useRef(new Animated.Value(200)).current;
+  const [curOffset, setCurOffset] = useState(0);
+  const [infoPermModal, setInfosPermModal] = useState(false);
 
-  // console.log('onMount: ', onMount);
   useEffect(() => {
-    handleCameraPermission();
+    // handleCameraPermission();
     setOnMount(true);
     NetInfo.addEventListener(networkState => {
       setIsOnline(networkState.isConnected && networkState.isInternetReachable);
       !isOnline ? setOnlineModal(true) : onRefresh();
-      // networkState.isConnected === false
-      //   ? [setOnlineModal(true),console.log("current offline: ",webViewRef.current)]
-      //   : setOnlineModal(false);
-      // console.log('is online ?', isOnline);
-      // console.log('Is connected? - ', networkState.isConnected);
     });
 
     const backAction = () => {
@@ -78,20 +81,30 @@ const HomeScreen = () => {
 
     return () => backHandler.remove();
   }, []);
-
-  // useEffect(() => {
-  //   const backAction = () => {
-  //     setModalVisible(true);
-  //     return true;
-  //   };
-
-  //   const backHandler = BackHandler.addEventListener(
-  //     'hardwareBackPress',
-  //     backAction,
-  //   );
-
-  //   return () => backHandler.remove();
-  // }, []);
+  const scrollDirection = event => {
+    var currentOffset = event.nativeEvent.contentOffset.y;
+    var direction = currentOffset > curOffset ? 'down' : 'up';
+    direction === 'down' ? hideTabs(55) : hideTabs(0);
+    setCurOffset(currentOffset);
+  };
+  const hideTabs = val => {
+    Animated.timing(translationY, {
+      toValue: val,
+      useNativeDriver: true,
+    }).start();
+  };
+  const showTabsBtn = val => {
+    Animated.timing(translationX, {
+      toValue: val,
+      useNativeDriver: true,
+    }).start();
+  };
+  const infoPermBtn = val => {
+    Animated.timing(transInfoPerm, {
+      toValue: val,
+      useNativeDriver: true,
+    }).start();
+  };
 
   async function handleBackPress() {
     await webViewRef.current.goBack();
@@ -99,10 +112,6 @@ const HomeScreen = () => {
 
   async function handleForwardPress() {
     await webViewRef.current.goForward();
-  }
-
-  function refresh() {
-    webViewRef.current?.reload();
   }
 
   const ActivityIndicatorElement = () => (
@@ -123,40 +132,13 @@ const HomeScreen = () => {
 
   const [height, setHeight] = useState(Dimensions.get('screen').height * 0.2);
   const [isEnabled, setEnabled] = useState(typeof onRefresh === 'function');
-  // const requestCameraPermission = async () => {
-  //   try {
-  //   const granted = await PermissionsAndroid.request(
-  //   PermissionsAndroid.PERMISSIONS.CAMERA,
-  //   {
-  //   title: "Permission for Captureeeee Extraaaodrinary Application",
-  //   message:
-  //   "For your beautiful pictures, " +
-  //   "Grant permission to Captureeeee Extraaaordinary Application",
-  //   buttonNeutral: "Not Right Now!",
-  //   buttonNegative: "Cancel",
-  //   buttonPositive: "Alright"
-  //   })}};
-
-  const handleCameraPermission = async () => {
-    const permission =
-      Platform.OS === 'ios'
-        ? PERMISSIONS.IOS.CAMERA
-        : PERMISSIONS.ANDROID.CAMERA;
-    console.log(permission);
-    const res = await check(permission);
-    if (res === RESULTS.GRANTED) {
-      setCameraGranted(true);
-    } else if (res === RESULTS.DENIED) {
-      const res2 = await request(permission);
-      res2 === RESULTS.GRANTED
-        ? setCameraGranted(true)
-        : setCameraGranted(false);
-    }
-  };
 
   return (
     <Container
-      style={[styles.container, {paddingBottom: stage === 1 ? 30 : 8}]}
+      style={[
+        styles.container,
+        {paddingBottom: stage === 1 ? (showTabs ? 30 : 0) : showTabs ? 8 : 0},
+      ]}
     >
       <SafeAreaView style={[styles.container, {paddingTop: insets.top}]}>
         <StatusBar
@@ -171,44 +153,15 @@ const HomeScreen = () => {
             setModalVisible(false);
           }}
         >
-          <View style={styles.modal.container}>
-            <View style={[styles.modal.subContainer, {height: 150}]}>
-              <Title style={styles.modal.title}>Bj-deal</Title>
-              <Text style={{textAlign: 'center', fontSize: 18}}>
-                Quitter l'application?
-              </Text>
-
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'flex-end',
-                  marginRight: 10,
-                }}
-              >
-                <TouchableOpacity
-                  style={{marginRight: 15}}
-                  onPress={() => {
-                    setModalVisible(false);
-                  }}
-                >
-                  <Text style={styles.modal.cancel}>ANNULER</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => {
-                    BackHandler.exitApp();
-                  }}
-                >
-                  <Text style={{fontWeight: '700'}}>OK</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
+          <ExitModal
+            setModalVisible={setModalVisible}
+            BackHandler={BackHandler}
+          />
         </Modal>
         <View style={styles.webViewContainer}>
           <ScrollView
             overScrollMode="never"
             onLayout={e => setHeight(e.nativeEvent.layout.height)}
-            onScroll={()=>console.log('scrolling')}
             refreshControl={
               <RefreshControl
                 onRefresh={onRefresh}
@@ -219,16 +172,14 @@ const HomeScreen = () => {
             }
             style={{flex: 1, height: '100%'}}
           >
-            {/* {!isOnline ? ( */}
             <WebView
-              onScroll={e =>
-                {setEnabled(
+              onScroll={e => {
+                setEnabled(
                   typeof onRefresh === 'function' &&
                     e.nativeEvent.contentOffset.y === 0,
                 ),
-                setShowTabs(false);
-              }
-              }
+                  scrollDirection(e);
+              }}
               style={[{height}]}
               userAgent={
                 DeviceInfo.getUserAgent() + Platform.OS == 'ios'
@@ -237,9 +188,7 @@ const HomeScreen = () => {
               }
               ref={webViewRef}
               source={{uri: baseUrl}}
-              // renderError={(e)=>onRefresh()}
               onHttpError={nativeEvent => {
-                nativeEvent.nativeEvent.code == -8;
                 setOnlineModal(true);
               }}
               onError={nativeEvent => {
@@ -248,13 +197,12 @@ const HomeScreen = () => {
               }}
               onNavigationStateChange={state => {
                 setCurUrl(state.url);
-                console.log('current url:', curUrl);
                 if (
-                  curUrl.includes('https://www.bj-deal.com/pst_stp_two.php')
+                  state.url.includes('https://www.bj-deal.com/pst_stp_two.php')
                 ) {
-                  handleCameraPermission()
+                  handleCameraPermission(showTabsBtn, infoPermBtn);
                   console.log('the url include the second step of annonce');
-                } else 'it do not include the second step';
+                }
                 if (
                   state.url == annonce ||
                   curUrl.includes('https://www.bj-deal.com/pst_stp_two.php')
@@ -262,15 +210,9 @@ const HomeScreen = () => {
                   setStage(3);
                 } else if (
                   state.url == contactsUrl ||
-                  curUrl.includes('https://www.bj-deal.com/user_account.php')
+                  state.url.includes('https://www.bj-deal.com/user_account.php')
                 ) {
                   setStage(1);
-                  // } else if (state.url !== contactsUrl) {
-                  //   setBaseUrl(state.url);
-                  //   setStage(2);
-                  // } else if (state.url !== annonce) {
-                  //   setBaseUrl(state.url);
-                  //   setStage(2);
                 } else setStage(2);
                 const back = state.canGoBack;
                 const forward = state.canGoForward;
@@ -290,59 +232,37 @@ const HomeScreen = () => {
                   setOnlineModal(false);
                 }}
               >
-                <View style={styles.modal.container}>
-                  <View style={[styles.modal.subContainer, {height: 180}]}>
-                    <Title style={styles.modal.title}>Bj-deal</Title>
-                    <Text
-                      style={{
-                        textAlign: 'center',
-                        fontSize: 18,
-                        fontWeight: '800',
-                      }}
-                    >
-                      Pas de connexion internet
-                    </Text>
-                    <Text style={{textAlign: 'justify', fontSize: 15}}>
-                      Activez vos données mobile ou connectez-vous à un réseau
-                      Wi-fi.
-                    </Text>
-                    <TouchableOpacity
-                      onPress={() => {
-                        isOnline
-                          ? [setOnlineModal(false), onRefresh()]
-                          : [
-                              setOnlineModal(false),
-                              setVisible(true),
-                              wait(200).then(() => {
-                                setVisible(false);
-                                setOnlineModal(true);
-                              }),
-                            ];
-                      }}
-                    >
-                      <Text
-                        style={{
-                          textAlign: 'right',
-                          color: commonColor.brandPrimary,
-                          fontWeight: '900',
-                          fontSize: 16,
-                        }}
-                      >
-                        Recharger
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
+                <NetworkModal
+                  wait={wait}
+                  isOnline={isOnline}
+                  setOnlineModal={setOnlineModal}
+                  onRefresh={onRefresh}
+                  setVisible={setVisible}
+                />
               </Modal>
             </View>
-            {/* ]
-          )} */}
+            <View>
+              <Modal
+                animationType="fade"
+                transparent
+                visible={infoPermModal}
+                onRequestClose={async () => {
+                  setOnlineModal(false);
+                }}
+              >
+                <InfosPermission setInfosPermModal={setInfosPermModal} />
+              </Modal>
+            </View>
           </ScrollView>
           {visible ? <ActivityIndicatorElement /> : null}
         </View>
       </SafeAreaView>
-      {/* <View style={styles.navigations.Cotaniner}> */}
-      {showTabs ? <View style={styles.navigations.subContainer}>
+      <Animated.View
+        style={[
+          styles.navigations.subContainer,
+          {transform: [{translateY: translationY}]},
+        ]}
+      >
         <TouchableOpacity
           style={{
             // backgroundColor: 'red',
@@ -386,17 +306,6 @@ const HomeScreen = () => {
               fontSize: 22,
             }}
           />
-          {/* <Image
-              source={require('../../Assets/login1.png')}
-              style={{
-                width: 22,
-                height: 22,
-                tintColor:
-                  stage == 1
-                    ? commonColor.brandPrimary
-                    : commonColor.inactiveTab,
-              }}
-            /> */}
         </TouchableOpacity>
         <TouchableOpacity
           style={{
@@ -465,13 +374,46 @@ const HomeScreen = () => {
             }}
           />
         </TouchableOpacity>
-      </View>:<TouchableOpacity 
-      onPress={()=>setShowTabs(true)}
-      style={{position:'absolute',backgroundColor:commonColor.brandPrimary,paddingVertical:15,paddingHorizontal:10,bottom:55, borderTopLeftRadius:20, borderBottomLeftRadius:20,right:0}} >
-        <Text>Show Tabs</Text>
-      </TouchableOpacity>
-}
-      {/* </View> */}
+      </Animated.View>
+
+      <Animated.View>
+        <TouchableOpacity
+          onPress={() => {
+            handleCameraPermission(showTabsBtn, infoPermBtn);
+          }}
+          style={[
+            styles.permBtn,
+            {
+              transform: [{translateX: translationX}],
+            },
+          ]}
+        >
+          <Text
+            style={{color: commonColor.inverseTextColor, fontWeight: 'bold'}}
+          >
+            Autorisations
+          </Text>
+        </TouchableOpacity>
+      </Animated.View>
+      <Animated.View>
+        <TouchableOpacity
+          onPress={() => {
+            console.log('infos pressed');
+            setInfosPermModal(true);
+          }}
+          style={[
+            styles.permBtn,
+            {
+              transform: [{translateX: transInfoPerm}],
+            },
+          ]}
+        >
+          <Icon
+            name="warning"
+            style={{color: commonColor.inverseTextColor, fontWeight: 'bold'}}
+          />
+        </TouchableOpacity>
+      </Animated.View>
     </Container>
   );
 };
